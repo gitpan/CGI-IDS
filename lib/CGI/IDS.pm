@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.00 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1147
+Version 1.01 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1147
 
 =cut
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 =head1 SYNOPSIS
 

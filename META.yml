@@ -1,6 +1,6 @@
 ---
 name: CGI-IDS
-version: 1.00
+version: 1.01
 author:
   - 'Hinnerk Altenburg <hinnerk@cpan.org>'
 abstract: "PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, LFI etc.)"
@@ -22,6 +22,6 @@ meta-spec:
 provides:
   CGI::IDS:
     file: lib/CGI/IDS.pm
-    version: 1.00
+    version: 1.01
 resources:
   license: http://opensource.org/licenses/lgpl-3.0.html
