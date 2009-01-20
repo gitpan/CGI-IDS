@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1219
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1221
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0106 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1219
+Version 1.0107 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1221
 
 =cut
 
-our $VERSION = '1.0106';
+our $VERSION = '1.0107';
 
 =head1 DESCRIPTION
 
@@ -1330,6 +1330,9 @@ sub _convert_concatenations {
 
 	# strip object traversal
 	$converted = preg_replace(qr/\w(\.\w\()/, '$1', $converted);
+	
+	# normalize obfuscated method calls
+	$converted = preg_replace(qr/\)\s*\+/, ')', $converted);
 
 	# convert JS special numbers
 	$converted = preg_replace(qr/(?:\(*[.\d]e[+-]*[^a-z\W]+\)*)|(?:NaN|Infinity)\W/ms, 1, $converted);
@@ -1409,7 +1412,7 @@ sub _run_centrifuge {
 		# strip padding
 		my $tmp_value = preg_replace(qr/\s{4}/m, '', $value);
 		$tmp_value = preg_replace(
-			qr/\s{4}|[\p{L}\d\+\-,]{40,}/m,
+			qr/\s{4}|[\p{L}\d\+\-,]{8,}/m,
 			'aaa',
 			$tmp_value
 		);
