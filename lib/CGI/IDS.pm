@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1221
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1225
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0107 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1221
+Version 1.0108 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1225
 
 =cut
 
-our $VERSION = '1.0107';
+our $VERSION = '1.0108';
 
 =head1 DESCRIPTION
 
@@ -841,6 +841,11 @@ sub _convert_from_commented {
 		my $converted = preg_replace(\@pattern, ';', $value);
 		$value    .= "\n" . $converted;
 	}
+
+	# deal with x509 false alerts
+	$value = preg_replace(qr/(\w+)\/\/(\w+)/m, '$1/$2', $value);    
+	$value = preg_replace(qr/(\w+)\/\+(\w+)/m, '$1/$2', $value);
+
 	# make sure inline comments are detected and converted correctly
 	$value = preg_replace(qr/(<\w+)\/+(\w+=?)/m, '$1/$2', $value);
 	$value = preg_replace(qr/[^\\:]\/\/(.*)$/m, '/**/$1', $value);
@@ -2184,7 +2189,7 @@ L<http://php-ids.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2008, 2009 Hinnerk Altenburg
+Copyright (C) 2008, 2009 Hinnerk Altenburg (L<http://www.hinnerk-altenburg.de/>)
 
 This file is part of PerlIDS.
 
