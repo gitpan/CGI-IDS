@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1225
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1228
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0108 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1225
+Version 1.0109 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1228
 
 =cut
 
-our $VERSION = '1.0108';
+our $VERSION = '1.0109';
 
 =head1 DESCRIPTION
 
@@ -158,7 +158,7 @@ my @CONVERTERS = qw/
 	_convert_from_xml
 	_convert_from_js_unicode
 	_convert_from_utf7
-	_convert_concatenations
+	_convert_from_concatenated
 	_convert_from_proprietary_encodings
 	_run_centrifuge
 /;
@@ -1287,9 +1287,9 @@ sub _convert_from_utf7 {
 	return $value;
 }
 
-#****if* IDS/_convert_concatenations
+#****if* IDS/_convert_from_concatenated
 # NAME
-#   _convert_concatenations
+#   _convert_from_concatenated
 # DESCRIPTION
 #   Converts basic concatenations
 # INPUT
@@ -1297,10 +1297,10 @@ sub _convert_from_utf7 {
 # OUTPUT
 #   value   converted string
 # SYNOPSIS
-#   IDS::_convert_concatenations($value);
+#   IDS::_convert_from_concatenated($value);
 #****
 
-sub _convert_concatenations {
+sub _convert_from_concatenated {
 	my ($value) = @_;
 
 	# normalize remaining backslashes
@@ -1328,6 +1328,7 @@ sub _convert_concatenations {
 		qr/(?:(?:^|\s+)(?:do|else)\s+)/, 
 		qr/(?:[{(]\s*new\s+\w+\s*[)}])/,
 		qr/(?:(this|self).)/,
+		qr/(?:in\s+)/,
 	);
 
 	# strip out concatenations
