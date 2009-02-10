@@ -3,7 +3,7 @@
 #   01_ids.t
 # DESCRIPTION
 #   Tests for PerlIDS (CGI::IDS)
-#   based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1228
+#   based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1235
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -393,6 +393,13 @@ my %testXSSList = (
 	27  => "document.createStyleSheet('http://businessinfo.co.uk/labs/xss/xss.css')",
 	28  => 'document.body.style.cssText=name',
 	29  => "for(i=0;;)i",
+	30 => 'stop.sdfgkldfsgsdfgsdfgdsfg in alert(1)',
+    31 => 'this .fdgsdfgsdfgdsfgdsfg
+                    this .fdgsdfgsdfgdsfgdsfg
+                    this .fdgsdfgsdfgdsfgdsfg
+                    this .fdgsdfgsdfgdsfgdsfg
+                    this .fdgsdfgsdfgdsfgdsfg
+                    aaaaaaaaaaaaaaaa :-(alert||foo)(1)||foo',
 );
 
 my %testSelfContainedXSSList = (
@@ -965,11 +972,11 @@ print testmessage("test converters and filters");
 is ($ids->detect_attacks(request => \%testAttributeBreakerList),			43,			"testAttributeBreakerList");
 is ($ids->detect_attacks(request => \%testCommentList),						9,			"testCommentList");
 is ($ids->detect_attacks(request => \%testConcatenatedXSSList),				1120,		"testConcatenatedXSSList");
-is ($ids->detect_attacks(request => \%testConcatenatedXSSList2),			825,		"testConcatenatedXSSList2");
+is ($ids->detect_attacks(request => \%testConcatenatedXSSList2),			837,		"testConcatenatedXSSList2");
 is ($ids->detect_attacks(request => \%testXMLPredicateXSSList),				143,		"testXMLPredicateXSSList");
-is ($ids->detect_attacks(request => \%testConditionalCompilationXSSList),	68,			"testXMLPredicateXSSList");
-is ($ids->detect_attacks(request => \%testXSSList),							493,		"testXSSList");
-is ($ids->detect_attacks(request => \%testSelfContainedXSSList),			500,		"testSelfContainedXSSList");
+is ($ids->detect_attacks(request => \%testConditionalCompilationXSSList),	87,			"testXMLPredicateXSSList");
+is ($ids->detect_attacks(request => \%testXSSList),							510,		"testXSSList");
+is ($ids->detect_attacks(request => \%testSelfContainedXSSList),			503,		"testSelfContainedXSSList");
 is ($ids->detect_attacks(request => \%testSQLIList),						485,		"testSQLIList");
 is ($ids->detect_attacks(request => \%testSQLIList2),						586,		"testSQLIList2");
 is ($ids->detect_attacks(request => \%testSQLIList3),						597,		"testSQLIList3");
@@ -977,8 +984,8 @@ is ($ids->detect_attacks(request => \%testSQLIList4),						768,		"testSQLIList4"
 is ($ids->detect_attacks(request => \%testSQLIList5),						859,		"testSQLIList5");
 is ($ids->detect_attacks(request => \%testSQLIList6),						206,		"testSQLIList6");
 is ($ids->detect_attacks(request => \%testDTList),							121,		"testDTList");
-is ($ids->detect_attacks(request => \%testURIList),							126,		"testURIList");
-is ($ids->detect_attacks(request => \%testRFEList),							495,		"testRFEList");
+is ($ids->detect_attacks(request => \%testURIList),							131,		"testURIList");
+is ($ids->detect_attacks(request => \%testRFEList),							487,		"testRFEList");
 is ($ids->detect_attacks(request => \%testUTF7List),						78,			"testUTF7List");
 is ($ids->detect_attacks(request => \%testBase64CCConverter),				95,			"testBase64CCConverter");
 is ($ids->detect_attacks(request => \%testDecimalCCConverter),				67,			"testDecimalCCConverter");

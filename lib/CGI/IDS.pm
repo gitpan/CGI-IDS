@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1228
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1235
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0109 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1228
+Version 1.0110 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1235
 
 =cut
 
-our $VERSION = '1.0109';
+our $VERSION = '1.0110';
 
 =head1 DESCRIPTION
 
@@ -1382,7 +1382,7 @@ sub _convert_from_proprietary_encodings {
 	$value = preg_replace(qr/Content|\Wdo\s/, '', $value);
 
 	# strip emoticons
-	$value = preg_replace(qr/(?:[:;]-[()\/PD]+)|(?:\s;[()PD]+)|(?::[()PD]+)|-\.-|\^\^/m, '', $value);
+	$value = preg_replace(qr/(?:\s[:;]-[)\/PD]+)|(?:\s;[)PD]+)|(?:\s:[)PD]+)|-\.-|\^\^/m, '', $value);
 
 	# normalize separation char repetition
 	$value = preg_replace(qr/([.+~=*_\-])\1{2,}/m, '$1', $value);
@@ -1391,7 +1391,7 @@ sub _convert_from_proprietary_encodings {
 	$value = preg_replace(qr/(\w\s)&\s(\w)/, '$1$2', $value);
 
 	# normalize JS backspace linebreaks
-	$value = preg_replace(qr/^\/|\/$|,\/|\/,/, '', $value);
+	$value = preg_replace(qr/^\/|\/$|,\/\n|\/,/, '', $value);
 
 	return $value;
 }
