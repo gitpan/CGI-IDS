@@ -1,5 +1,8 @@
 Revision history for PerlIDS
 
+1.0111  2009-03-04
+        Updated filter set and converters to PHPIDS rev. 1240
+
 1.0110  2009-02-10
         Updated filter set and converters to PHPIDS rev. 1235
 

@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1235
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1240
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0110 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1235
+Version 1.0111 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1240
 
 =cut
 
-our $VERSION = '1.0110';
+our $VERSION = '1.0111';
 
 =head1 DESCRIPTION
 
@@ -1092,8 +1092,11 @@ sub _convert_from_sql_keywords {
 
 sub _convert_entities {
 	my ($value) = @_;
-
 	my $converted = '';
+
+	# deal with double encoded payload 
+	$value = preg_replace(qr/&amp;/, '&', $value);
+
 	if (preg_match(qr/&#x?[\w]+/ms, $value)) {
 		$converted	= preg_replace(qr/(&#x?[\w]{2}\d?);?/ms, '$1;', $value);
 		$converted	= HTML::Entities::decode_entities($converted);
@@ -1328,6 +1331,7 @@ sub _convert_from_concatenated {
 		qr/(?:(?:^|\s+)(?:do|else)\s+)/, 
 		qr/(?:[{(]\s*new\s+\w+\s*[)}])/,
 		qr/(?:(this|self).)/,
+		qr/(?:undefined)/,
 		qr/(?:in\s+)/,
 	);
 
