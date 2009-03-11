@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1240
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1245
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0111 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1240
+Version 1.0112 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1245
 
 =cut
 
-our $VERSION = '1.0111';
+our $VERSION = '1.0112';
 
 =head1 DESCRIPTION
 
@@ -130,11 +130,11 @@ use constant DEBUG_SORT_KEYS_ALPHA	=> (1 << 5); # sort request by keys alphabeti
 use constant DEBUG_WHITELIST		=> (1 << 6); # dumps loaded whitelist hash
 
 # use constant DEBUG_MODE				=>	DEBUG_KEY_VALUES |
-#										DEBUG_IMPACTS |
-#										DEBUG_WHITELIST |
-#										DEBUG_ARRAY_INFO |
-#										DEBUG_CONVERTERS |
-#										DEBUG_SORT_KEYS_NUM;
+# 										DEBUG_IMPACTS |
+# 										DEBUG_WHITELIST |
+# 										DEBUG_ARRAY_INFO |
+# 										DEBUG_CONVERTERS |
+# 										DEBUG_SORT_KEYS_NUM;
 
 # simply comment this line out to switch debugging mode on (also uncomment above declaration)
 use constant DEBUG_MODE				=> 0; 
@@ -166,7 +166,7 @@ my @CONVERTERS = qw/
 #------------------------- Globals ---------------------------------------------
 
 # harmless string definition
-my $not_harmless = qr/[^\w\s\/@!?,\.]+|(?:\.\/)/;
+my $not_harmless = qr/[^\w\s\/@!?,\.]+|(?:\.\/)|(?:@@\w+)/;
 
 #------------------------- Subs ------------------------------------------------
 
@@ -1033,7 +1033,7 @@ sub _convert_from_sql_hex {
 
 	my @matches = ();
 	# PHP to Perl note: additional parenthesis around RegEx for getting PHP's $matches[0]
-    if(preg_match_all(qr/((?:0x[a-f\d]{2,}[a-f\d\s]*)+)/im, $value, \@matches)) {
+    if(preg_match_all(qr/((?:0x[a-f\d]{2,}[a-f\d]*)+)/im, $value, \@matches)) {
 		foreach my $match ($matches[0]) {
             my $converted = '';
             foreach my $hex_index (str_split($match, 2)) {
@@ -1067,6 +1067,9 @@ sub _convert_from_sql_keywords {
 	$value   = preg_replace($pattern, '"=0', $value);
 	$value   = preg_replace(qr/null,/ims, ',0', $value);
 	$value   = preg_replace(qr/,null/ims, ',0', $value);
+	$value   = preg_replace(qr/(?:between|mod)/ims, '', $value);
+	$value   = preg_replace(qr/(?:and\s+\d+\.?\d*)/ims, '', $value);
+	$value   = preg_replace(qr/(?:\s+and\s+)/ims, ' or ', $value);
 	# \\N instead of PHP's \\\N
 	$pattern	= qr/[^\w,]NULL|\\N|TRUE|FALSE|UTC_TIME|LOCALTIME(?:STAMP)?|CURRENT_\w+|BINARY|(?:(?:ASCII|SOUNDEX|MD5|R?LIKE)[+\s]*\([^()]+\))|(?:-+\d)/ims;
 	$value		= preg_replace($pattern, 0, $value);
