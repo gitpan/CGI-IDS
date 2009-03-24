@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1250
+#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1255
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0113 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1250
+Version 1.0114 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1255
 
 =cut
 
-our $VERSION = '1.0113';
+our $VERSION = '1.0114';
 
 =head1 DESCRIPTION
 
@@ -112,8 +112,6 @@ use Encode qw(decode);
 use Carp;
 use JSON::XS;
 use Time::HiRes;
-use utf8;
-use encoding 'utf8';
 use FindBin qw($Bin);
 
 #------------------------- Settings --------------------------------------------
@@ -1067,7 +1065,7 @@ sub _convert_from_sql_keywords {
 	$value   = preg_replace($pattern, '"=0', $value);
 	$value   = preg_replace(qr/null,/ims, ',0', $value);
 	$value   = preg_replace(qr/,null/ims, ',0', $value);
-	$value   = preg_replace(qr/(?:between|mod)/ims, '', $value);
+	$value   = preg_replace(qr/(?:between|mod)/ims, 'or', $value);
 	$value   = preg_replace(qr/(?:and\s+\d+\.?\d*)/ims, '', $value);
 	$value   = preg_replace(qr/(?:\s+and\s+)/ims, ' or ', $value);
 	# \\N instead of PHP's \\\N
@@ -1076,6 +1074,7 @@ sub _convert_from_sql_keywords {
 	$pattern	= qr/(?:NOT\s+BETWEEN)|(?:IS\s+NOT)|(?:NOT\s+IN)|(?:XOR|\WDIV\W|\WNOT\W|<>|RLIKE(?:\s+BINARY)?)|(?:REGEXP\s+BINARY)|(?:SOUNDS\s+LIKE)/ims;
 	$value		= preg_replace($pattern, '!', $value);
 	$value		= preg_replace(qr/"\s+\d/, '"', $value);
+	$value		= preg_replace(qr/\/\d+/, '', $value);
 
 	return $value;
 }
@@ -1435,7 +1434,7 @@ sub _run_centrifuge {
 		$tmp_value = preg_replace(qr/"[\p{L}\d\s]+"/m, '', $tmp_value);
 
 		my $stripped_length = strlen(
-			preg_replace(qr/[\d\s\p{L}.:,%\/><-]+/m,
+			preg_replace(qr/[\d\s\p{L}.:,%&\/><-]+/m,
 			'',
 			$tmp_value)
 		);

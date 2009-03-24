@@ -1,5 +1,9 @@
 Revision history for PerlIDS
 
+1.0114  2009-03-24
+        Dropped utf8 pragmas, thanks to Merten Falk
+        Updated filter set and converters to PHPIDS rev. 1255
+
 1.0113  2009-03-18
         Updated filter set and converters to PHPIDS rev. 1250
 
