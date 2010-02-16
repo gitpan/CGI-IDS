@@ -1,0 +1,50 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.61.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 76b89a35a2c117363eadf3c2af443beb474cc080 Build.PL
+SHA1 0362e8ac2f0c4908b0287a7af91b6263bb032b1e Changes
+SHA1 12affed1e2468066ffaa0f2e367e4e0cb6785184 LICENSE
+SHA1 6e35b0a64fbbd6f70e2e3ada349d283cde7f9541 LICENSE.LESSER
+SHA1 69e3520123661a8d56200e5ddce2f864dbd8dbb6 MANIFEST
+SHA1 5ddf73e818e7b8431e479b538a6a64f0c476c5cd META.yml
+SHA1 02a3bb9606f20ef13b46c806f0ad6952e0c03c70 Makefile.PL
+SHA1 db707b129e888b48704fc714e0802e278fda1327 README
+SHA1 dedca55d18f0df40aa9d4fa3a6fdf100c1808ef5 examples/demo.pl
+SHA1 8a8884b429224623a1cf4cf6777e57473a25d2fd examples/ids/param_whitelist.xml
+SHA1 d5ac4ae64742bdd44f0dca587ace3330a70d04ba examples/style.css
+SHA1 2a2ad52fbb39f4d86e3f6a14a920d32a561f7f10 lib/CGI/IDS.pm
+SHA1 5733fff9e669e8d709ccea23af7e402c96aee4d8 lib/CGI/IDS.xml
+SHA1 6b1f66380d1ed36244b36585440447041660e284 t/01-ids.t
+SHA1 73e66633bae37d9d00b20f1ab2f2f76d9396d274 t/02-pod.t
+SHA1 6c5bdbfde3b08dd6119b2a889d95ab2a2ef3df3c t/03-pod-coverage.t
+SHA1 85b20bf09080c6942f988aad027a8e92f41934d4 t/data/test_filter_bad_data.xml
+SHA1 23a3ed09ecb28608b8803f638e6f0bf531e8d499 t/data/test_filter_bad_regex.xml
+SHA1 836e453366dc2517952e16c60f3e58f757590578 t/data/test_filter_bad_xml.xml
+SHA1 fd4f1d0a71b223b041c153904bddd15ef1f2f527 t/data/test_param_whitelist.xml
+SHA1 25c24f0f34d5fb191fffddf7c5f0492ba669b329 t/data/test_param_whitelist_bad_data.xml
+SHA1 0912a32e8a3d64c8028eb01103041c81726d21db t/data/test_param_whitelist_bad_regex.xml
+SHA1 e3c81dca3fed2dfa3291e0df73f6b81a3c8e5ca0 t/data/test_param_whitelist_bad_xml.xml
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (Darwin)
+
+iQEcBAEBAgAGBQJLen1FAAoJEIe8YhvnCJ3ZTvcH/0lxP1J5CEW3x1phGs59i+JB
+qFwosmFBGmnl2zaUF1mQMXHPfvbwkNrSHd392KKcACslHio0+x3fFh9csPcDwoyf
+8wJkkIfkSpYNyTYTqAt++NyBSjBm/IGQ9YWx3+k53pAV9IZ+idboXDoTBN2pyp3m
++zxEKW+a5Bpp0xtK/yUnTnhIhOoM+5FCtB87hd8DNhLm5OMZyc7D96cVGmdIG0Sh
+DJcOewj1gttWqk45kgzwbAxC0G8dVwbhdB0vm5eq3yKamky+oRBVi9vTANvpnUfc
+XqZbNgxoPnsPiGYujo43VlZEB6XpfSNmpgSDVxI9OWp6AoH926yi+wUYL+DHsfs=
+=YvKL
+-----END PGP SIGNATURE-----

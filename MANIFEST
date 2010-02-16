@@ -21,3 +21,4 @@ t/data/test_param_whitelist.xml
 t/data/test_param_whitelist_bad_data.xml
 t/data/test_param_whitelist_bad_regex.xml
 t/data/test_param_whitelist_bad_xml.xml
+SIGNATURE    Added here by Module::Build
