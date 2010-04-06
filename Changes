@@ -1,5 +1,9 @@
 Revision history for PerlIDS
 
+1.02    2010-04-06
+        Extracted CGI::IDS::Whitelist for separately using the whitelist check
+        Updated filter set and converters to PHPIDS rev. 1374
+
 1.0118  2010-02-22
         Added XML::Parser to build_requires due to cpantesters' FAILs on some systems
         Fixed base64 warning in testForFalseAlerts

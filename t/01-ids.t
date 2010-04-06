@@ -3,7 +3,7 @@
 #   01_ids.t
 # DESCRIPTION
 #   Tests for PerlIDS (CGI::IDS)
-#   based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1373
+#   The vector tests are based on PHPIDS http://php-ids.org tests/IDS/MonitorTest.php rev. 1374
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -32,10 +32,11 @@ use strict;
 use warnings;
 
 #------------------------- Libs ------------------------------------------------
-use Test::More tests => 59;
+use Test::More tests => 70;
 
 # test module loading
 BEGIN { use_ok('CGI::IDS') } # diag( "Testing CGI::IDS $CGI::IDS::VERSION, Perl $], $^X" );
+BEGIN { use_ok('CGI::IDS::Whitelist') }
 BEGIN { use_ok('XML::Simple', qw(:strict)) }
 BEGIN { use_ok('HTML::Entities') }
 BEGIN { use_ok('MIME::Base64') }
@@ -43,7 +44,6 @@ BEGIN { use_ok('Encode', qw(decode)) }
 BEGIN { use_ok('Carp') }
 BEGIN { use_ok('JSON::XS') }
 BEGIN { use_ok('Time::HiRes') }
-BEGIN { use_ok('utf8') }
 BEGIN { use_ok('FindBin', qw($Bin)) }
 
 #------------------------- Test Data -------------------------------------------
@@ -554,6 +554,7 @@ my %testSQLIList2 = (
 	42  => "1' -1 or+1= '+1 ",
 	43  => "1' -1 - column or '1 ",
 	44  => "1' -1 or '1",
+	45  => " (1)or(1)=(1) ",
 );
 
 my %testSQLIList3 = (
@@ -741,6 +742,7 @@ my %testSQLIList6 = (
 	27 => "1' and 0x1abc like 0x88 or '0",
 	28 => "'-1-0 union select (select `table_name` from `information_schema`.tables limit 1) and '1",
 	29 => "null''null' find_in_set(uname, 'lightos' ) and '1",
+	30 => "(case-1 when mid(load_file(0x61616161),12, 1/ 1)like 0x61 then 1 else 0 end) ",
 );
 
 my %testDTList = (
@@ -756,6 +758,7 @@ my %testDTList = (
 	9   => '&lt;!--#exec%20cmd=&quot;/bin/cat%20/etc/passwd&quot;--&gt;',
 	10  => '../../../../../../../../conf/server.xml',
 	11  => '/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd',
+	12  => 'dir/..././..././folder/file.php ',
 );
 
 my %testURIList = (
@@ -922,7 +925,7 @@ my %testForFalseAlerts = (
    25 => '"mooie verhalen in de talen: engels"',
 );
 
-#------------------------- Tests -----------------------------------------------
+#------------------------- CGI::IDS Tests -----------------------------------------------
 
 # croak tests
 print testmessage("croak tests");
@@ -1021,19 +1024,19 @@ is ($ids->detect_attacks(request => \%testWhitelistSkip3),					8,			"testWhiteli
 print testmessage("test converters and filters");
 is ($ids->detect_attacks(request => \%testAttributeBreakerList),			29,			"testAttributeBreakerList");
 is ($ids->detect_attacks(request => \%testCommentList),						9,			"testCommentList");
-is ($ids->detect_attacks(request => \%testConcatenatedXSSList),				1120,		"testConcatenatedXSSList");
+is ($ids->detect_attacks(request => \%testConcatenatedXSSList),				1125,		"testConcatenatedXSSList");
 is ($ids->detect_attacks(request => \%testConcatenatedXSSList2),			935,		"testConcatenatedXSSList2");
-is ($ids->detect_attacks(request => \%testXMLPredicateXSSList),				147,		"testXMLPredicateXSSList");
+is ($ids->detect_attacks(request => \%testXMLPredicateXSSList),				148,		"testXMLPredicateXSSList");
 is ($ids->detect_attacks(request => \%testConditionalCompilationXSSList),	87,			"testXMLPredicateXSSList");
 is ($ids->detect_attacks(request => \%testXSSList),							750,		"testXSSList");
 is ($ids->detect_attacks(request => \%testSelfContainedXSSList),			526,		"testSelfContainedXSSList");
-is ($ids->detect_attacks(request => \%testSQLIList),						457,		"testSQLIList");
-is ($ids->detect_attacks(request => \%testSQLIList2),						643,		"testSQLIList2");
-is ($ids->detect_attacks(request => \%testSQLIList3),						585,		"testSQLIList3");
-is ($ids->detect_attacks(request => \%testSQLIList4),						834,		"testSQLIList4");
+is ($ids->detect_attacks(request => \%testSQLIList),						475,		"testSQLIList");
+is ($ids->detect_attacks(request => \%testSQLIList2),						649,		"testSQLIList2");
+is ($ids->detect_attacks(request => \%testSQLIList3),						591,		"testSQLIList3");
+is ($ids->detect_attacks(request => \%testSQLIList4),						852,		"testSQLIList4");
 is ($ids->detect_attacks(request => \%testSQLIList5),						935,		"testSQLIList5");
-is ($ids->detect_attacks(request => \%testSQLIList6),						452,		"testSQLIList6");
-is ($ids->detect_attacks(request => \%testDTList),							121,		"testDTList");
+is ($ids->detect_attacks(request => \%testSQLIList6),						469,		"testSQLIList6");
+is ($ids->detect_attacks(request => \%testDTList),							126,		"testDTList");
 is ($ids->detect_attacks(request => \%testURIList),							143,		"testURIList");
 is ($ids->detect_attacks(request => \%testRFEList),							524,		"testRFEList");
 is ($ids->detect_attacks(request => \%testUTF7List),						71,			"testUTF7List");
@@ -1044,6 +1047,45 @@ is ($ids->detect_attacks(request => \%testHexCCConverter),					99,	    	"testHex
 is ($ids->detect_attacks(request => \%testLDAPInjectionList),				20,			"testLDAPInjectionList");
 is ($ids->detect_attacks(request => \%testJSONScanning),					32,			"testJSONScanning");
 is ($ids->detect_attacks(request => \%testForFalseAlerts),					0,			"testForFalseAlerts");
+
+#------------------------- CGI::IDS::Whitelist Tests -----------------------------------------------
+print testmessage("Whitelist Processor tests");
+
+eval {
+	my $whitelist_fail = new CGI::IDS::Whitelist(
+		whitelist_file	=> "$Bin/data/missing_param_whitelist.xml",
+	);
+};
+like( $@, qr/_load_whitelist_from_xml.*File does not exist/, 'Croak if whitelist file is missing' );
+
+my $whitelist = new CGI::IDS::Whitelist (
+	whitelist_file	=> "$Bin/data/test_param_whitelist.xml",
+);
+isa_ok ($whitelist, 'CGI::IDS::Whitelist');
+
+
+my %testWhitelist = (
+	login_password	=>	'alert(1)',
+	name			=>	'hinnerk',
+	lastname		=>	'hinnerk alert(2)',
+	action			=>	'login',
+	username		=>	'hinnerk',
+	scr_rec_id		=>	'8763476.946ef987',
+	send			=>  '',
+	uid				=>  'alert(1)',
+	cert			=>  'alert(1)',
+);
+ok (!$whitelist->is_suspicious(key => 'login_password', request => \%testWhitelist),	"login_password whitelisted as per rule and conditions");
+ok ( $whitelist->is_suspicious(key => 'lastname', request => \%testWhitelist),			"login_password is suspicious");
+ok (!$whitelist->is_suspicious(key => 'name', request => \%testWhitelist),				"name is not suspicious");
+ok (!$whitelist->is_suspicious(key => 'uid', request => \%testWhitelist),				"uid is generally whitelisted");
+ok (!$whitelist->is_suspicious(key => 'scr_rec_id', request => \%testWhitelist),		"scr_rec_id is whitelisted as per rule");
+ok ( $whitelist->is_suspicious(key => 'cert', request => \%testWhitelist),				"cert is not whitelisted due to failing conditions");
+
+ok ( $whitelist->is_harmless_string("hinnerk"),											"'hinnerk' is a harmless string");
+ok (!$whitelist->is_harmless_string("hinnerk(1)"),										"'hinnerk(1)' is not a harmless string");
+
+like ($whitelist->convert_if_marked_encoded( key => 'json_value', value => '{"a":"b","c":["123", 111, "456"]}' ), qr/^[a-c1-6\n]+$/, 'param marked as JSON was converted');
 
 sub testmessage {
 	(my $message) = @_;
