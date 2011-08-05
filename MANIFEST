@@ -7,10 +7,10 @@ lib/CGI/IDS.pm
 lib/CGI/IDS.xml
 lib/CGI/IDS/Whitelist.pm
 LICENSE
-LICENSE.LESSER
 Makefile.PL
 MANIFEST
 META.yml
+META.json
 README
 t/01-ids.t
 t/02-pod.t
@@ -22,4 +22,3 @@ t/data/test_param_whitelist.xml
 t/data/test_param_whitelist_bad_data.xml
 t/data/test_param_whitelist_bad_regex.xml
 t/data/test_param_whitelist_bad_xml.xml
-SIGNATURE    Added here by Module::Build
