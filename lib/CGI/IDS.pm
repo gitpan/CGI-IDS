@@ -10,7 +10,7 @@ package CGI::IDS;
 # NAME
 #   PerlIDS (CGI::IDS)
 # DESCRIPTION
-#   Website Intrusion Detection System based on PHPIDS http://php-ids.org rev. 1409
+#   Website Intrusion Detection System based on PHPIDS https://phpids.org rev. 1409
 # AUTHOR
 #   Hinnerk Altenburg <hinnerk@cpan.org>
 # CREATION DATE
@@ -41,15 +41,15 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0213 - based on and tested against the filter tests of PHPIDS http://php-ids.org rev. 1409
+Version 1.0214 - based on and tested against the filter tests of PHPIDS https://phpids.org rev. 1409
 
 =cut
 
-our $VERSION = '1.0213';
+our $VERSION = '1.0214';
 
 =head1 DESCRIPTION
 
-PerlIDS (CGI::IDS) is a website intrusion detection system based on PHPIDS L<http://php-ids.org/> to detect possible attacks in website requests, e.g. Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), SQL Injections (SQLI) etc.
+PerlIDS (CGI::IDS) is a website intrusion detection system based on PHPIDS L<https://phpids.org/> to detect possible attacks in website requests, e.g. Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), SQL Injections (SQLI) etc.
 
 It parses any hashref for possible attacks, so it does not depend on CGI.pm.
 
@@ -542,6 +542,9 @@ sub _apply_filters {
 
     # benchmark
     my $start_time = Time::HiRes::time();
+
+    # make UTF-8 and sanitize from malformated UTF-8, if necessary
+    $string = $self->{whitelist}->make_utf_8($string);
 
     # run all string converters
     $attack{string_converted} = _run_all_converters($string);
@@ -1635,6 +1638,7 @@ sub urldecode {
     $theURL =~ tr/+/ /;
     $theURL =~ s/%([a-fA-F0-9]{2,2})/chr(hex($1))/eg;
     $theURL =~ s/<!–(.|\n)*–>//g;
+    utf8::decode($theURL);
     return $theURL;
 }
 
@@ -1654,6 +1658,7 @@ sub urldecode {
 sub urlencode {
     (my $theURL) = @_;
     $theURL =~ s/([\W])/sprintf("%%%02X",ord($1))/eg;
+    utf8::encode($theURL);
     return $theURL;
 }
 
@@ -1746,7 +1751,7 @@ __END__
 
 This module is compatible with the PHPIDS filter set.
 Please find the latest (frequently updated) filter file from the PHPIDS Subversion repository at
-L<https://svn.php-ids.org/svn/trunk/lib/IDS/default_filter.xml>.
+L<https://dev.itratos.de/projects/php-ids/repository/raw/trunk/lib/IDS/default_filter.xml>.
 
 =head3 Example XML Code
 
@@ -2049,9 +2054,9 @@ Thanks to:
 
 =over 4
 
-=item * Mario Heiderich (L<http://php-ids.org/>)
+=item * Mario Heiderich (L<https://phpids.org/>)
 
-=item * Christian Matthies (L<http://php-ids.org/>)
+=item * Christian Matthies (L<https://phpids.org/>)
 
 =item * Ingo Bax (L<http://www.epublica.de/>)
 
@@ -2063,7 +2068,7 @@ Hinnerk Altenburg, C<< <hinnerk at cpan.org> >>
 
 =head1 SEE ALSO
 
-L<http://php-ids.org/>
+L<https://phpids.org/>
 
 =head1 COPYRIGHT & LICENSE
 
