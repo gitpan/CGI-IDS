@@ -41,11 +41,11 @@ CGI::IDS - PerlIDS - Perl Website Intrusion Detection System (XSS, CSRF, SQLI, L
 
 =head1 VERSION
 
-Version 1.0216 - based on and tested against the filter tests of PHPIDS https://phpids.org rev. 1409
+Version 1.0217 - based on and tested against the filter tests of PHPIDS https://phpids.org rev. 1409
 
 =cut
 
-our $VERSION = '1.0216';
+our $VERSION = '1.0217';
 
 =head1 DESCRIPTION
 
@@ -2031,6 +2031,10 @@ You can find documentation for this module with the perldoc command.
 You can also look for information at:
 
 =over 4
+
+=item * GitHub
+
+L<https://github.com/hinnerk-a/perlids>
 
 =item * RT: CPAN's request tracker
 
